@@ -1,0 +1,73 @@
+namespace AdventOfCode.Days;
+
+public class Day03 : DayBase
+{
+    public Day03() : base(3) { }
+
+    public override object SolvePart1()
+    {
+        long sum = 0;
+
+        for (int i = 0; i < InputLines.Length; i++)
+        {
+            var line = InputLines[i];
+            if (string.IsNullOrWhiteSpace(line) || line.Length < 2) continue;
+
+            int best = 0;
+            int maxRight = line[^1] - '0';
+
+            for (int j = line.Length - 2; j >= 0; j--)
+            {
+                int d = line[j] - '0';
+                int candidate = d * 10 + maxRight;
+                if (candidate > best) best = candidate;
+                if (d > maxRight) maxRight = d;
+            }
+
+            sum += best;
+        }
+
+        return sum;
+    }
+
+    public override object SolvePart2()
+    {
+        long total = 0;
+
+        for (int i = 0; i < InputLines.Length; i++)
+        {
+            var line = InputLines[i];
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            int n = line.Length;
+            int k = Math.Min(12, n);
+            int start = 0;
+            long value = 0;
+
+            for (int pos = 0; pos < k; pos++)
+            {
+                int end = n - (k - pos);
+                int bestDigit = -1;
+                int bestIndex = start;
+
+                for (int j = start; j <= end; j++)
+                {
+                    int d = line[j] - '0';
+                    if (d > bestDigit)
+                    {
+                        bestDigit = d;
+                        bestIndex = j;
+                        if (bestDigit == 9) break; // can't do better
+                    }
+                }
+
+                value = value * 10 + bestDigit;
+                start = bestIndex + 1;
+            }
+
+            total += value;
+        }
+
+        return total;
+    }
+}
